@@ -6,9 +6,10 @@ const Thread = ({ thread }) => {
             {thread.map((message:any, index:number) => (
                 <div
                     key={index}
-                    className="rounded-lg border border-gray-300 p-2 my-2"
+                    className={message.type === 'bot' ? "border border-green-300 px-4 py-2 rounded-md bg-green-800 text-white mb-3" : "border border-gray-300 px-4 py-2 rounded-md bg-transparent text-white mb-3"}
+                    
                 >
-                    <p className="text-white">{JSON.stringify(message)}</p>
+                    <p className="text-white">{message.message}</p>
                 </div>
             ))}
         </div>

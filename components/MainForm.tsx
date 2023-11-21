@@ -8,8 +8,24 @@ const MainForm = () => {
     const [score, setScore] = useState(0)
     const [need, setNeed] = useState('')
     const [chat, setChat] = useState([])
+    const [lead, setLead] = useState({})
+    const [submitted, setSubmitted] = useState(false)
     
     const getq = async () => {
+    }
+    const handleFirstSubmit = async (e) => {
+      e.preventDefault()
+      setLoading(true)
+      const formData = new FormData(e.currentTarget)
+      // setLead(formData)
+      // console.log(lead.entries().length)
+      for (var pair of formData.entries()) {
+        lead[pair[0]] = pair[1]
+        console.log(pair[0]+ ', ' + pair[1]);
+        }
+      console.log(lead)
+      setSubmitted(true)
+      setLoading(false)
     }
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -23,26 +39,27 @@ const MainForm = () => {
         setLoading(false)
     }
     return (
-        <div className="w-full min-h-screen max-w-screen-lg mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
-  <div className="flex flex-col space-y-8">
-    <h1 className="text-5xl text-center font-semibold text-white">📯 inForm</h1>
-    <h2 className="text-2xl text-center text-green-200">
-      Personalized forms that decrease sales friction by surfacing relevant information to all users.
-    </h2>
-    <div className="flex flex-col border border-green-200 rounded-xl p-6 space-y-6 bg-white bg-opacity-25">
-      <div className="flex justify-between items-center">
-        <p className="text-lg text-white">Lead Score</p>
-        <p className="text-lg font-semibold text-white">{score}</p>
+        <div className="w-full h-screen overflow-y-scroll md:overflow-y-auto max-w-screen-lg mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
+      <div className="flex flex-col space-y-8">
+        <h1 className="text-5xl text-center font-semibold text-white">📯 inForm</h1>
+        <h2 className="text-2xl text-center text-green-200">
+          Personalized forms that decrease sales friction by surfacing relevant information to all users.
+        </h2>
+        <div className="flex flex-col border border-green-200 rounded-xl p-6 space-y-6 bg-white bg-opacity-25">
+          <div className="flex justify-between items-center">
+            <p className="text-lg text-white">Lead Score</p>
+            <p className="text-lg font-semibold text-white">{score}</p>
+          </div>
+          <div className="flex justify-between items-center">
+            <p className="text-lg text-white">Lead Need</p>
+            <p className="text-lg font-semibold text-white">{need}</p>
+          </div>
+        </div>
       </div>
-      <div className="flex justify-between items-center">
-        <p className="text-lg text-white">Lead Need</p>
-        <p className="text-lg font-semibold text-white">{need}</p>
-      </div>
-    </div>
-  </div>
   <div className="flex justify-center items-center">
     <div className="w-full max-w-md flex flex-col border border-gray-200 rounded-md p-8 space-y-6 bg-white bg-opacity-25">
-    <form onSubmit={handleSubmit} className="w-full flex flex-col space-y-4">
+      {!submitted &&
+    <form onSubmit={handleFirstSubmit} className="w-full flex flex-col space-y-4">
         <div className="flex flex-col space-y-2">
           <label htmlFor="firstName" className="text-sm">
             First Name
@@ -134,7 +151,10 @@ const MainForm = () => {
         >
           Submit
         </button>
-      </form>
+      </form>}
+      {submitted &&
+      <div>
+      {chat.length > 0 && <Thread thread={chat} />}
       <form onSubmit={handleSubmit} className="w-full flex flex-col space-y-4">
        
         <div className="flex flex-col space-y-2">
@@ -154,6 +174,8 @@ const MainForm = () => {
           Submit
         </button>
       </form>
+      </div>
+}
     </div>
   </div>
 </div>

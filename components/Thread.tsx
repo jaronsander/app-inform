@@ -2,7 +2,7 @@ import React from 'react';
 
 const Thread = ({ thread }) => {
     return (
-        <div className="flex flex-col items-start overflow-y-scroll">
+        <div className="flex flex-col items-start flex-grow overflow-y-auto py-4">
             {thread.map((message:any, index:number) => (
                 <div
                     key={index}

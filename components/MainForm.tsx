@@ -2,41 +2,50 @@
 import { useState, useEffect } from 'react';
 import { getQuestion } from '@/util/api';
 import Thread from './Thread';
+import { load } from 'langchain/load';
 
 const MainForm = () => {
     const [loading, setLoading] = useState(false)
     const [score, setScore] = useState(0)
-    const [need, setNeed] = useState('')
+    const [reason, setReason] = useState('')
     const [chat, setChat] = useState([])
     const [lead, setLead] = useState({})
     const [submitted, setSubmitted] = useState(false)
+    const [textchat, setTextChat] = useState('')
     
-    const getq = async () => {
-    }
+
     const handleFirstSubmit = async (e) => {
       e.preventDefault()
+      
       setLoading(true)
       const formData = new FormData(e.currentTarget)
-      // setLead(formData)
-      // console.log(lead.entries().length)
+      const sub = {}
       for (var pair of formData.entries()) {
-        lead[pair[0]] = pair[1]
-        console.log(pair[0]+ ', ' + pair[1]);
-        }
-      console.log(lead)
+        sub[pair[0]] = pair[1]
+      }
+      setLead(sub)
       setSubmitted(true)
+      var data = {}
+      data['lead'] = sub
+      const mesg = {type: 'bot', message: `Hi ${sub.firstName}, what prompted you  to fill out this form?`}
+      data['messages'] = [mesg]
+      chat.push(mesg)
       setLoading(false)
     }
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        setLoading(true)
-        chat.push({type: 'human', message: e.target[0].value})
-    
-        const res = await getQuestion(chat)
-        console.log(res)
-        chat.push({type: 'bot', message: res.question})
-        setScore(res.score)
-        setLoading(false)
+      e.preventDefault()
+      setLoading(true)
+      chat.push({type: 'human', message: e.target[0].value})
+      const data = {
+        lead: lead,
+        messages: chat
+      }
+      const res = await getQuestion(data)
+      console.log(res)
+      chat.push({type: 'bot', message: res.question})
+      setScore(res.score)
+      setReason(res.reason)
+      setLoading(false)
     }
     return (
         <div className="w-full h-screen overflow-y-scroll md:overflow-y-auto max-w-screen-lg mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
@@ -50,11 +59,12 @@ const MainForm = () => {
             <p className="text-lg text-white">Lead Score</p>
             <p className="text-lg font-semibold text-white">{score}</p>
           </div>
-          <div className="flex justify-between items-center">
-            <p className="text-lg text-white">Lead Need</p>
-            <p className="text-lg font-semibold text-white">{need}</p>
+          <div className="flex flex-col space-y-2">
+            <p className="text-lg text-white">Score Reason</p>
+            <p className="text-md text-white">{reason}</p>
           </div>
         </div>
+
       </div>
   <div className="flex justify-center items-center">
     <div className="w-full max-w-md flex flex-col border border-gray-200 rounded-md p-8 space-y-6 bg-white bg-opacity-25">
@@ -155,6 +165,7 @@ const MainForm = () => {
       {submitted &&
       <div>
       {chat.length > 0 && <Thread thread={chat} />}
+      {loading && <p className="border border-gray-300 px-4 py-2 text-lg rounded-md bg-transparent text-white">Loading...</p>}
       <form onSubmit={handleSubmit} className="w-full flex flex-col space-y-4">
        
         <div className="flex flex-col space-y-2">
@@ -163,6 +174,8 @@ const MainForm = () => {
             name="message"
             className="resize-none border border-gray-300 px-4 py-2 text-lg rounded-md bg-transparent text-white"
             rows="4"
+            value={textchat}
+            onChange={(e) => setTextChat(e.target.value)}
             placeholder="Type your message..."
           />
         </div>

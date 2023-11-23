@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@magicul/next-google-tag-manager": "^2.0.0",
     "@sentry/nextjs": "^7.81.1",
     "langchain": "^0.0.185",
     "next": "14.0.2",

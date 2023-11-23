@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { Suspense } from 'react'
 import Analytics from '@/components/Analytics'
+import GoogleTagManager from '@magicul/next-google-tag-manager';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,9 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Suspense>
-          <Analytics />
-        </Suspense>
+        <GoogleTagManager id='G-8THW6L4QX2'/>
         {children}
         </body>
     </html>

@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react';
-import { getQuestion } from '@/util/api';
+import { createSubmission, createThreadEntry, getQuestion } from '@/util/api';
 import Thread from './Thread';
 import { load } from 'langchain/load';
 
@@ -19,15 +19,25 @@ const MainForm = () => {
       
       setLoading(true)
       const formData = new FormData(e.currentTarget)
-      const sub = {}
+      const sub: any = {}
       for (var pair of formData.entries()) {
         sub[pair[0]] = pair[1]
       }
+      console.log(sub)
+      const res = await createSubmission(sub)
+      console.log(res)
       setLead(sub)
       setSubmitted(true)
-      var data = {}
+      var data: any = {}
       data['lead'] = sub
-      const mesg = {type: 'bot', message: `Hi ${sub.firstName}, what prompted you  to fill out this form?`}
+      const mesg: any = {type: 'bot', text: `Hi ${sub.firstname}, what prompted you  to fill out this form?`}
+      const thread = await createThreadEntry({
+        submissionId: res.id,
+        type: mesg.type,
+        text: mesg.text,
+        model: 'testing'
+      })
+      console.log(thread)
       data['messages'] = [mesg]
       chat.push(mesg)
       setLoading(false)
@@ -35,14 +45,14 @@ const MainForm = () => {
     const handleSubmit = async (e) => {
       e.preventDefault()
       setLoading(true)
-      chat.push({type: 'human', message: e.target[0].value})
+      chat.push({type: 'human', text: e.target[0].value})
       const data = {
         lead: lead,
         messages: chat
       }
       const res = await getQuestion(data)
       console.log(res)
-      chat.push({type: 'bot', message: res.question})
+      chat.push({type: 'bot', text: res.question})
       setScore(res.score)
       setReason(res.reason)
       setLoading(false)
@@ -71,25 +81,25 @@ const MainForm = () => {
       {!submitted &&
     <form onSubmit={handleFirstSubmit} className="w-full flex flex-col space-y-4">
         <div className="flex flex-col space-y-2">
-          <label htmlFor="firstName" className="text-sm">
+          <label htmlFor="firstname" className="text-sm">
             First Name
           </label>
           <input
             type="text"
-            id="firstName"
-            name="firstName"
+            id="firstname"
+            name="firstname"
             className="border border-gray-300 px-4 py-2 rounded-md bg-transparent text-white"
             required
           />
         </div>
         <div className="flex flex-col space-y-2">
-          <label htmlFor="lastName" className="text-sm">
+          <label htmlFor="lastname" className="text-sm">
             Last Name
           </label>
           <input
             type="text"
-            id="lastName"
-            name="lastName"
+            id="lastname"
+            name="lastname"
             className="border border-gray-300 px-4 py-2 rounded-md bg-transparent text-white"
             required
           />
@@ -119,13 +129,13 @@ const MainForm = () => {
           />
         </div>
         <div className="flex flex-col space-y-2">
-          <label htmlFor="seniority" className="text-sm">
-            Seniority
+          <label htmlFor="website" className="text-sm">
+            Website
           </label>
           <input
             type="text"
-            id="seniority"
-            name="seniority"
+            id="website"
+            name="website"
             className="border border-gray-300 px-4 py-2 rounded-md bg-transparent text-white"
             required
           />
@@ -138,18 +148,6 @@ const MainForm = () => {
             type="text"
             id="industry"
             name="industry"
-            className="border border-gray-300 px-4 py-2 rounded-md bg-transparent text-white"
-            required
-          />
-        </div>
-        <div className="flex flex-col space-y-2">
-          <label htmlFor="companySize" className="text-sm">
-            Company Size
-          </label>
-          <input
-            type="text"
-            id="companySize"
-            name="companySize"
             className="border border-gray-300 px-4 py-2 rounded-md bg-transparent text-white"
             required
           />

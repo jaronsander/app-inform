@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Submission {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  firstname String
+  lastname  String
+  email     String
+  title     String
+  website   String
+  industry  String
+  threads   Thread[]
+  analyses  Analysis[]
+}
+
+model Thread {
+  id           Int        @id @default(autoincrement())
+  createdAt    DateTime   @default(now())
+  type         String
+  text         String     @db.Text
+  model        String
+  submissionId Int
+  submission   Submission @relation(fields: [submissionId], references: [id])
+}
+
+model Analysis {
+  id           Int        @id @default(autoincrement())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  model        String
+  score        Int
+  reason       String
+  summary      String
+  submissionId Int
+  submission   Submission @relation(fields: [submissionId], references: [id])
+}

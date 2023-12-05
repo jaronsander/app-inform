@@ -32,10 +32,11 @@ Chat History:
  */
 export async function POST(req: NextRequest) {
   try {
-    const {data} = await req.json();
-    const messages = data.messages ?? [];
+    const {body} = await req.json();
+    console.log(body);
+    const messages = body.messages ?? [];
     // const currentMessageContent = messages[messages.length - 1].content;
-    const lead = data.lead;
+    const lead = body.lead;
 
     const prompt = PromptTemplate.fromTemplate(TEMPLATE);
     /**

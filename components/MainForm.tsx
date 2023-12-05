@@ -47,13 +47,13 @@ const MainForm = () => {
       setLoading(false)
     }
     return (
-      <div className="w-full overflow-y-scroll md:overflow-y-auto max-w-screen-lg mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
+      <div className="w-full overflow-y-scroll md:overflow-y-auto max-w-screen-lg mx-auto">
           
           {/* Form Section */}
         {/* <div className="flex justify-center items-center"> */}
-          <div className="w-full max-w-md flex flex-col border border-green-200 rounded-xl p-6 space-y-6 bg-white bg-opacity-25">
-            {!submitted ?
-            <form onSubmit={handleFirstSubmit} className="w-full flex flex-col space-y-4">
+        {!submitted ?
+          <div className="w-full max-w-md flex flex-col border border-green-200 rounded-xl p-6 space-y-6 bg-white bg-opacity-25 mx-auto">
+            <form onSubmit={handleFirstSubmit} className=" w-full flex flex-col space-y-4">
               <div className="flex flex-col space-y-2">
                 <label htmlFor="firstname" className="text-sm">
                   First Name
@@ -133,9 +133,12 @@ const MainForm = () => {
               >
                 Submit
               </button>
-            </form> : <ChatForm formEntry={lead} submissionId={submissionId}></ChatForm>}
+            </form> 
         {/* </div> */}
-      </div>
+      </div>: <>
+            <ChatForm formEntry={lead} submissionId={submissionId}></ChatForm>
+            </>
+            }
     </div>
 
     );

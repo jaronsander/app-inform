@@ -8,7 +8,7 @@ export const analyze = async (data) => {
     const url = createURL(`/api/analyze/`)
     console.log(data)
     const response = await fetch(
-        new Request(url, { method: "POST", body: JSON.stringify({data}) })
+        new Request(url, { method: "POST", body: JSON.stringify({body: data}) })
     )
     if(response.ok) {
         const data = await response.json()

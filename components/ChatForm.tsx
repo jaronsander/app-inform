@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -65,7 +65,7 @@ export function ChatForm(props: {
     }
 
     return (
-        <div className="grid grid-cols-5 mt-28 gap-4">
+        <div className="grid grid-cols-5 gap-4">
             {/* Left Column - Scorecard */}
             <div className="col-span-2 p-4 md:p-8 flex flex-col border rounded gap-4">
                 <div className=''>

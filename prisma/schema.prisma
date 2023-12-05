@@ -26,8 +26,8 @@ model Submission {
 model Thread {
   id           Int        @id @default(autoincrement())
   createdAt    DateTime   @default(now())
-  type         String
-  text         String     @db.Text
+  role         String
+  message      String     @db.Text
   model        String
   submissionId Int
   submission   Submission @relation(fields: [submissionId], references: [id])

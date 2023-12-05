@@ -109,8 +109,8 @@ export async function POST(req: NextRequest) {
      * https://js.langchain.com/docs/modules/model_io/models/
      */
     const model = new ChatOpenAI({
-      temperature: 0.8,
-      maxTokens: 150,
+      temperature: 0.3,
+    //   maxTokens: 150,
     });
     /**
      * Chat models stream message chunks rather than bytes, so this

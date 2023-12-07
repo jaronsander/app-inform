@@ -33,7 +33,7 @@ Chat History:
 export async function POST(req: NextRequest) {
   try {
     const {body} = await req.json();
-    console.log(body);
+    // console.log(body);
     const messages = body.messages ?? [];
     // const currentMessageContent = messages[messages.length - 1].content;
     const lead = body.lead;

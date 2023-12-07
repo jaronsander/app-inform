@@ -6,20 +6,20 @@ const createURL = (path) => {
 }
 export const analyze = async (data) => {
     const url = createURL(`/api/analyze/`)
-    console.log(data)
+    // console.log(data)
     const response = await fetch(
         new Request(url, { method: "POST", body: JSON.stringify({body: data}) })
     )
     if(response.ok) {
         const data = await response.json()
-        console.log(data)
+        // console.log(data)
         return data
     }
 }
 
 export const createSubmission = async (data) => {
     const url = createURL(`/api/submission`)
-    console.log(url)
+    // console.log(url)
     const response = await fetch(
         new Request(url, { method: "POST", body: JSON.stringify({body: data}) })
     )

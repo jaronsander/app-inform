@@ -7,7 +7,7 @@ import { useChat } from "ai/react";
 import { useRef, useState, ReactElement } from "react";
 import type { FormEvent } from "react";
 import { ChatMessageBubble } from "@/components/ChatMessageBubble";
-import { analyze } from '@/util/api';
+import { analyze, createThreadEntry } from '@/util/api';
 
 
 export function ChatForm(props: {
@@ -23,12 +23,20 @@ export function ChatForm(props: {
     const [reason, setReason] = useState('No messages yet')
 
 
-    const { messages, input, setInput, handleInputChange, handleSubmit, isLoading: chatEndpointIsLoading, setMessages } =
+    const { messages, input, handleInputChange, handleSubmit, isLoading: chatEndpointIsLoading } =
         useChat({
         api: endpoint,
         initialMessages: [{id: 1, role: "assistant", content: `Hi ${formEntry.firstname}, what prompted you to fill out this form?`}],
-        onResponse(response) {
-            // TODO call endpoint to evaluate messages
+        onFinish(response) {
+            console.log(response);
+            const thread = {
+                role: response.role,
+                message: response.content,
+                submissionId: submissionId,
+                model: 'testing'
+            }
+            createThreadEntry(thread)
+
         },
         onError: (e) => {
             toast(e.message, {
@@ -45,14 +53,21 @@ export function ChatForm(props: {
         if (messageContainerRef.current) {
         messageContainerRef.current.classList.add("grow");
         }
-        if (!messages.length) {
-        await new Promise(resolve => setTimeout(resolve, 300));
+        console.log('Form event:')
+        console.log(e)
+        const mesg = (e.currentTarget.elements[0] as HTMLInputElement).value
+        const thread = {
+            role: 'assistant',
+            message: mesg,
+            submissionId: submissionId,
+            model: 'testing'
         }
+        createThreadEntry(thread)
         handleSubmit(e);
         await new Promise(resolve => setTimeout(resolve, 300));
         console.log('Waited 300ms')
-        console.log(messages);
-        console.log(formEntry)
+        // console.log(messages)
+        // console.log(formEntry)
         
         const analysis = await analyze({
             lead: formEntry,

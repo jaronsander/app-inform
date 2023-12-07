@@ -37,7 +37,7 @@ const MainForm = () => {
       setSubmitted(true)
 
       // Create initial thread entry
-      const mesg: any = {type: 'bot', text: `Hi ${sub.firstname}, what prompted you  to fill out this form?`}
+      const mesg: any = {type: 'assistant', text: `Hi ${sub.firstname}, what prompted you  to fill out this form?`}
       const thread = await createThreadEntry({
         submissionId: res.id,
         role: mesg.type,

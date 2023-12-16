@@ -3,18 +3,18 @@ import { useChat } from "ai/react";
 import { useRef, useState, ReactElement } from "react";
 import type { FormEvent } from "react";
 import type { AgentStep } from "langchain/schema";
-import { createSubmission, createThreadEntry, getQuestion } from '@/util/api';
+import { createSubmission, createThreadEntry, getQuestion, initialQuestion } from '@/util/api';
 import Thread from './Thread';
 import { load } from 'langchain/load';
 import { ChatForm } from "@/components/ChatForm";
+import { set } from "zod";
 
 const MainForm = () => {
     const [loading, setLoading] = useState(false)
-    const [score, setScore] = useState(0)
-    const [reason, setReason] = useState('')
     const [lead, setLead] = useState({})
     const [submitted, setSubmitted] = useState(false)
     const [submissionId, setSubmissionId] = useState(0)
+    const [intro, setIntro] = useState({})
     
 
     const handleFirstSubmit = async (e) => {
@@ -34,16 +34,20 @@ const MainForm = () => {
       
       // Set lead and mark as submitted
       setLead(sub)
-      setSubmitted(true)
 
+
+      const intro = await initialQuestion({lead: sub})
+      console.log(intro)
       // Create initial thread entry
-      const mesg: any = {type: 'assistant', text: `Hi ${sub.firstname}, what prompted you  to fill out this form?`}
-      const thread = await createThreadEntry({
+      const introMesg = {
         submissionId: res.id,
-        role: mesg.type,
-        message: mesg.text,
+        role: 'assistant',
+        message: intro.opening,
         model: 'testing'
-      })
+      }
+      setIntro(introMesg)
+      const thread = await createThreadEntry(introMesg)
+      setSubmitted(true)
       setLoading(false)
     }
     return (
@@ -136,7 +140,7 @@ const MainForm = () => {
             </form> 
         {/* </div> */}
       </div>: <>
-            <ChatForm formEntry={lead} submissionId={submissionId}></ChatForm>
+            <ChatForm formEntry={lead} submissionId={submissionId} introMessage={intro}></ChatForm>
             </>
             }
     </div>

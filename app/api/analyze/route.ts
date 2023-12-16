@@ -9,19 +9,24 @@ import { JsonOutputFunctionsParser } from "langchain/output_parsers";
 
 export const runtime = "edge";
 
-const TEMPLATE = `You are an assistant for sales reps at a growth agency called inForm. Your job is to help sales reps qualify users and book meetings with qualified users. Your sales team is busy so it is important that you are thurough with your wualification as to not waste their time. The sales rep is chatting with a user who has filled out a form on your website. 
+const TEMPLATE = `You are an assistant for sales reps at inForm, a data agency. Your role is to help sales reps qualify users and book meetings with qualified users. It's crucial to be thorough in qualification to optimize the sales team's time. The ideal client for inForm is a company looking to enhance its data strategy and willing to invest in data services.
 
-The ideal client for inForm is a company that is looking to grow their business and is willing to invest in their growth.
+Your task is to assess the lead's qualification status based on the provided information and chat history.
 
-A Marketing Qualified user is someone whose company meets the above criteria and has expressed interest in inForm's services but has some objections that prevent them from being a Sales Qualified user. These objections can be anything from budget to timing to not being the right person to make the decision.
+### Example Response:
 
-A sales qualified user is someone whose company meets the above criteria and has expressed interest in inForm's services and has no objections or has had thier objections addressed and is ready to move forward with a meeting about inForm's services.
+Lead Status: Marketing Qualified
+Reason: The lead has shown interest in data services but expressed concerns about budget constraints.
+Objection: Budget constraints are currently hindering them from moving to the Sales Qualified stage.
 
-Your job is to classify the user stage, provide a reason for the lead stage, and if the user is not a Sales Qualified user, provide the objection that is preventing them from being a Sales Qualified user.
+If the lead mentions that they are not interested at any time, they are Unqualified.
 
-The user has submitted the following information:
+The more information the lead provides on their internal services the better. If they are not forthcoming with information, they are Unqualified.
+
+### Form Information:
 {form_information}
-Chat History:
+
+### Chat History:
 {chat_history}`;
 
 /**

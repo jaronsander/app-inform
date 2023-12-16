@@ -12,9 +12,10 @@ import { analyze, createThreadEntry } from '@/util/api';
 
 export function ChatForm(props: {
     formEntry: object
-    submissionId: number
+    submissionId: number,
+    introMessage: object,
 }) {
-    const { formEntry, submissionId } = props;
+    const { formEntry, submissionId, introMessage } = props;
     const messageContainerRef = useRef<HTMLDivElement | null>(null);
 
     const endpoint = 'api/chat'
@@ -26,7 +27,7 @@ export function ChatForm(props: {
     const { messages, input, handleInputChange, handleSubmit, isLoading: chatEndpointIsLoading } =
         useChat({
         api: endpoint,
-        initialMessages: [{id: 1, role: "assistant", content: `Hi ${formEntry.firstname}, what prompted you to fill out this form?`}],
+        initialMessages: [{id: 0, role: 'assistant', content: introMessage.message, model: 'testing'}],
         onFinish(response) {
             console.log(response);
             const thread = {
@@ -44,7 +45,7 @@ export function ChatForm(props: {
             });
         },
         body: {
-            entry: formEntry
+            lead: formEntry
         }
         });
 
@@ -92,7 +93,7 @@ export function ChatForm(props: {
                 {/* Add your reason content */}
                 <div className='bg-white bg-opacity-25 w-full h-full border border-green-200 rounded-md p-1'>
                     <p>{reason}</p>
-                </div>  
+                </div>
                 </div>
             </div>
             <div className={`col-span-3 flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden border`}>
@@ -105,7 +106,7 @@ export function ChatForm(props: {
                     .reverse()
                     .map((m, i) => {
                     const sourceKey = (messages.length - 1 - i).toString();
-                    return (<ChatMessageBubble key={m.id} message={m} aiEmoji='📯'></ChatMessageBubble>)
+                    return (<ChatMessageBubble key={sourceKey} message={m} aiEmoji='📯'></ChatMessageBubble>)
                     })
                 ) : (
                 ""

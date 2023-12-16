@@ -81,9 +81,9 @@ export function ChatForm(props: {
     }
 
     return (
-        <div className="grid md:grid-cols-5 gap-4 grid-cols-1">
+        <div className="grid md:grid-cols-5 md:gap-4 grid-cols-1">
             {/* Left Column - Scorecard */}
-            <div className="col-span-2 p-4 md:p-8 flex flex-col border rounded gap-4 h-fitl">
+            <div className="col-span-2 p-4 md:p-8 flex flex-col border rounded gap-4 h-fit mb-3 md:mb-0">
                 <div className=''>
                 <h2><b>Lead Stage</b>: <span className='bg-white bg-opacity-25 p-1 border border-green-200 rounded-md'>{stage}</span></h2>
                 </div>
@@ -95,8 +95,9 @@ export function ChatForm(props: {
                     <p>{reason}</p>
                 </div>
                 </div>
+
             </div>
-            <div className={`col-span-3 flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden border`}>
+            <div className={`col-span-3 flex flex-col items-center p-4 md:p-8 rounded grow border`}>
             <div
                 className="flex flex-col-reverse w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out max-h-[50vh]"
                 ref={messageContainerRef}

@@ -13,21 +13,19 @@ const TEMPLATE = `You are an assistant for sales reps at inForm, a data agency. 
 
 Your task is to assess the lead's qualification status based on the provided information and chat history.
 
-### Example Response:
-
-Lead Status: Marketing Qualified
-Reason: The lead has shown interest in data services but expressed concerns about budget constraints.
-Objection: Budget constraints are currently hindering them from moving to the Sales Qualified stage.
-
-If the lead mentions that they are not interested at any time, they are Unqualified.
-
-The more information the lead provides on their internal services the better. If they are not forthcoming with information, they are Unqualified.
+### IMPORTANT NOTES:
+- If the lead mentions that they are not interested at any time, they are Unqualified.
+- The more information the lead provides on their internal services the better. If they are not forthcoming with information, they are Unqualified.
+- No lead can be Sales Qualified without being a decision-maker or having the ability to influence the decision-making process.
+- No lead can be Sales Qualified without giving information on their technical infrastructure.
 
 ### Form Information:
 {form_information}
 
 ### Chat History:
-{chat_history}`;
+{chat_history}
+
+Disregard the example response and provide your own assessment of the lead's qualification status, reason, and objection (if applicable) based on the form information and chat history.`;
 
 /**
  * This handler initializes and calls an OpenAI Functions powered

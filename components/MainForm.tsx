@@ -51,7 +51,7 @@ const MainForm = () => {
       setLoading(false)
     }
     return (
-      <div className="w-full overflow-y-scroll md:overflow-y-auto max-w-screen-lg mx-auto">
+      <div className="w-full max-w-screen-lg mx-auto">
           
           {/* Form Section */}
         {/* <div className="flex justify-center items-center"> */}

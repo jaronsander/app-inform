@@ -3,7 +3,7 @@ import { useChat } from "ai/react";
 import { useRef, useState, ReactElement } from "react";
 import type { FormEvent } from "react";
 import type { AgentStep } from "langchain/schema";
-import { createSubmission, createThreadEntry, getQuestion, initialQuestion } from '@/util/api';
+import { createSubmission, createThreadEntry, initialQuestion } from '@/util/api';
 import Thread from './Thread';
 import { load } from 'langchain/load';
 import { ChatForm } from "@/components/ChatForm";
@@ -36,13 +36,13 @@ const MainForm = () => {
       setLead(sub)
 
 
-      const intro = await initialQuestion({lead: sub})
-      console.log(intro)
+      // const intro = await initialQuestion({lead: sub})
+      // console.log(intro)
       // Create initial thread entry
       const introMesg = {
         submissionId: res.id,
         role: 'assistant',
-        message: intro.opening,
+        message: `Hi ${sub.firstname}, what prompted you to reach out to us today? Is it curiosity, or are you looking for a solution to a specific problem, or something else?`,
         model: 'testing'
       }
       setIntro(introMesg)

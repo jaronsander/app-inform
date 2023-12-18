@@ -8,6 +8,7 @@ import { useRef, useState, ReactElement } from "react";
 import type { FormEvent } from "react";
 import { ChatMessageBubble } from "@/components/ChatMessageBubble";
 import { analyze, createThreadEntry } from '@/util/api';
+import Link from 'next/link'
 
 
 export function ChatForm(props: {
@@ -95,7 +96,11 @@ export function ChatForm(props: {
                     <p>{reason}</p>
                 </div>
                 </div>
-
+                {(stage == 'Marketing Qualified' || stage == 'Sales Qualified') && (
+                    <div className='border rounded gap-4 h-fit mb-3 md:mb-0 p-3 text-lg bg-green-500'>
+                        <Link href='/meeting'>Book a meeting!</Link>
+                    </div>
+                )}
             </div>
             <div className={`col-span-3 flex flex-col items-center p-4 md:p-8 rounded grow border`}>
             <div

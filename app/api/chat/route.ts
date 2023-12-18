@@ -83,7 +83,7 @@ Based on the lead form submission, current conversation, and the sales script, g
 - The more information the lead provides on their internal services the better. If they are not forthcoming with information, they are Unqualified.
 - No lead can be Sales Qualified without being a decision-maker or having the ability to influence the decision-making process.
 - No lead can be Sales Qualified without giving information on their technical infrastructure.
-- If you offer a call with a sales rep without getting information on their technical infrastructure, your bonus will be reduced by 50%.
+- No lead can be Marketing Qualified without having a need for one of inForm's services.
 
 Assistant response:`;
 

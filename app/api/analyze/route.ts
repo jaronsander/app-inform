@@ -19,11 +19,11 @@ Your task is to assess the lead's qualification status based on the provided inf
 - No lead can be Sales Qualified without being a decision-maker or having the ability to influence the decision-making process.
 - No lead can be Sales Qualified without giving information on their technical infrastructure.
 
-### Form Information:
-{form_information}
-
 ### Chat History:
 {chat_history}
+
+### Form Information:
+{form_information}
 
 Disregard the example response and provide your own assessment of the lead's qualification status, reason, and objection (if applicable) based on the form information and chat history.`;
 
@@ -87,11 +87,11 @@ export async function POST(req: NextRequest) {
     const chain = prompt
       .pipe(functionCallingModel)
       .pipe(new JsonOutputFunctionsParser());
-    // const formattedPrompt = await prompt.format({
-    //     form_information: JSON.stringify(lead),
-    //     chat_history: messages.map((message) => JSON.stringify(message)).join("\n"),
-    // });
-    // console.log(formattedPrompt);
+    const formattedPrompt = await prompt.format({
+        form_information: JSON.stringify(lead),
+        chat_history: messages.map((message) => JSON.stringify(message)).join("\n"),
+    });
+    console.log(formattedPrompt);
     const result = await chain.invoke({
       form_information: JSON.stringify(lead),
       chat_history: messages.map((message) => JSON.stringify(message)).join("\n"),

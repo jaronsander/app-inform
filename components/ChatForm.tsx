@@ -59,21 +59,21 @@ export function ChatForm(props: {
         console.log(e)
         const mesg = (e.currentTarget.elements[0] as HTMLInputElement).value
         const thread = {
-            role: 'assistant',
+            role: 'user',
             message: mesg,
             submissionId: submissionId,
             model: 'testing'
         }
         createThreadEntry(thread)
         handleSubmit(e);
-        await new Promise(resolve => setTimeout(resolve, 300));
-        console.log('Waited 300ms')
+        // await new Promise(resolve => setTimeout(resolve, 300));
+        // console.log('Waited 300ms')
         // console.log(messages)
         // console.log(formEntry)
         
         const analysis = await analyze({
             lead: formEntry,
-            messages: messages
+            messages: [...messages,{role: 'user', content: mesg}],
         })
         console.log('Analysis')
         console.log(analysis)

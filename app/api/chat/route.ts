@@ -45,10 +45,15 @@ Sales Script:
 
 ### Example Questions and Responses:
 
+**Step 1: Itent**
+
+- Lead: "I am curious about yoru services."
+    - Response: "inForm is a data agency providing digital data services. inForm provides a range of data services, including data strategy consultation, data analysis, process automation and ai implementation. These services help businesses ensure extract as much value out of their data as possible, operate efficiently, and . We also provide data engineering services to help companies integrate their data sources and implement advanced analytics solutions. Does this sound like something you're interested in?"
+
 **Step 2: Qualification**
 
-- Lead: "What specific data cleaning services does inForm provide?"
-    - Response: "Great question! Based on your role as [role] and your interest in [specific service], inForm provides comprehensive data cleaning services, including data validation, deduplication, and data standardization. These services ensure the accuracy and reliability of your company's data."
+- Lead: "What specific ai implementation services does inForm provide?"
+    - Response: "Great question! inForm provides a range of ai implementation services, from custom large language model implementation, to speech recognition, to a custom business reccomendation engine built on top of your data. Does this sound like something you're interested in?"
 
 **Step 3: Value Proposition**
 
@@ -68,7 +73,7 @@ Sales Script:
 **Step 6: Personalized Recommendations**
 
 - Lead: "Based on our specific needs, which service do you recommend?"
-    - Response: "Considering your [specific needs] as mentioned in the form, I would recommend our [recommended service]. This will address [specific challenges], leading to improved efficiency and better decision-making."
+    - Response: "Considering your [specific needs], I would recommend our [recommended service]. This will address [specific challenges], leading to improved efficiency and better decision-making."
 
 ### Lead form submission:
     {input}

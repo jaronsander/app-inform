@@ -12,7 +12,7 @@ export const analyze = async (data) => {
     )
     if(response.ok) {
         const data = await response.json()
-        // console.log(data)
+        console.log(data)
         return data
     }
 }
@@ -51,7 +51,7 @@ export const createSubmission = async (data) => {
     )
     if(response.ok) {
         const data = await response.json()
-        console.log(data)
+        // console.log(data)
         return data.data
     }
 }
@@ -64,7 +64,7 @@ export const createThreadEntry = async (id, data) => {
     )
     if(response.ok) {
         const data = await response.json()
-        console.log(data)
+        // console.log(data)
         return data.data
     }
 }

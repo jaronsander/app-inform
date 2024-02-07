@@ -27,6 +27,7 @@ Your task is to assess the lead's qualification status based on the provided inf
 
 Disregard the example response and provide your own assessment of the lead's qualification status, reason, and objection (if applicable) based on the form information and chat history.`;
 
+const TEMP = `You are a summary generator. Your task is to generate a summary of the form submission. The form is for {purpose} and the company is {company}. The lead information is as follows: {lead}. The form questions and answers are as follows: {chat_history}. Generate an executive summary of the form submission.`;
 /**
  * This handler initializes and calls an OpenAI Functions powered
  * structured output chain. See the docs for more information:
@@ -40,8 +41,10 @@ export async function POST(req: NextRequest) {
     const messages = body.messages ?? [];
     // const currentMessageContent = messages[messages.length - 1].content;
     const lead = body.lead;
+    const purpose = body.purpose;
+    const company = body.company;
 
-    const prompt = PromptTemplate.fromTemplate(TEMPLATE);
+    const prompt = PromptTemplate.fromTemplate(TEMP);
     /**
      * Function calling is currently only supported with ChatOpenAI models
      */
@@ -53,7 +56,7 @@ export async function POST(req: NextRequest) {
      * We use Zod (https://zod.dev) to define our schema for convenience,
      * but you can pass JSON Schema directly if desired.
      */
-    const schema = z.object({
+    const qschema = z.object({
       stage: z
         .enum(["Unqualified", "Marketing Qualified", "Sales Qualified"])
         .describe("The lead stage of human being interacted with"),
@@ -61,6 +64,10 @@ export async function POST(req: NextRequest) {
       objection: z
         .optional(z.string())
         .describe("If the lead has voiced any objections, what are they?"),
+    });
+    const ischema = z.object({
+  
+      summary: z.string().describe("The summary of the form submission"),
     });
 
     /**
@@ -70,12 +77,13 @@ export async function POST(req: NextRequest) {
      * Specifying "function_call" ensures that the provided function will always
      * be called by the model.
      */
+
     const functionCallingModel = model.bind({
       functions: [
         {
           name: "output_formatter",
           description: "Should always be used to properly format output",
-          parameters: zodToJsonSchema(schema),
+          parameters: zodToJsonSchema(ischema),
         },
       ],
       function_call: { name: "output_formatter" },
@@ -88,13 +96,17 @@ export async function POST(req: NextRequest) {
       .pipe(functionCallingModel)
       .pipe(new JsonOutputFunctionsParser());
     const formattedPrompt = await prompt.format({
-        form_information: JSON.stringify(lead),
+        lead: JSON.stringify(lead),
         chat_history: messages.map((message) => JSON.stringify(message)).join("\n"),
+        purpose: purpose,
+        company: company,
     });
     console.log(formattedPrompt);
     const result = await chain.invoke({
-      form_information: JSON.stringify(lead),
+      lead: JSON.stringify(lead),
       chat_history: messages.map((message) => JSON.stringify(message)).join("\n"),
+      purpose: purpose,
+      company: company,
     });
 
     return NextResponse.json(result, { status: 200 });

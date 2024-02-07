@@ -7,7 +7,7 @@ import { zodToJsonSchema } from "zod-to-json-schema";
 
 export const runtime = "edge";
 
-const TEMPLATE = `You are a form question generator. Your task is to summarize responses to previous questions and responses and generate the most relevant, accurate, complete and specific question. You are given the previous answers and form questions. The purpose of this form is to help {goal}. The company description is:
+const TEMPLATE = `You are a form question generator. Your task is to generate the most relevant, accurate, complete and specific question and the most likely responses to that question. You are given the previous answers and form questions. The purpose of this form is to help {goal}. The company description of the company you are asking questions for is as follows:
 {company}
 
 ### Initial Lead Form Submission:
@@ -16,8 +16,8 @@ const TEMPLATE = `You are a form question generator. Your task is to summarize r
 ### Previous Questions and Responses:
 {previous_responses}
 
-Provide a consice and analytical summary, generate the next question and predict possible answers as it relates to the purpose of the form.
-AVOID BASIC QUESTIONS! BE PSYCHOLOGICALLY INSIGHTFUL! DO NOT REFERENCE THE NEXT QUESTION IN THE SUMMARY!
+Generate the next question and predict possible answers as it relates to the purpose of the form.
+AVOID BASIC QUESTIONS! BE PSYCHOLOGICALLY INSIGHTFUL!
 `;
 
 export async function POST(req: NextRequest) {
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     const model = new ChatOpenAI({ temperature: 0.5 });
 
     const schema = z.object({
-      analysis: z.string().describe("Analysis of the previous answers as it relates to the purpose of the form"),
+      // analysis: z.string().describe("Analysis of the previous answers as it relates to the purpose of the form"),
       question: z.string().describe("The next form question"),
       suggestions: z.array(z.string()).describe("Predicted answers for the next question"),
     });

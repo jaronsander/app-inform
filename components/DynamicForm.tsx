@@ -1,6 +1,6 @@
 'use client'
-import React, { useState, FC } from 'react';
-import { getQuestion, createSubmission, createThreadEntry } from '@/util/api';
+import React, { useState, FC, useEffect } from 'react';
+import { getQuestion, createSubmission, createThreadEntry, analyze } from '@/util/api';
 
 interface LeadData {
   email: string;
@@ -18,7 +18,7 @@ const DynamicForm = () => {
   const [currentQuestion, setCurrentQuestion] = useState<string>('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [currentStage, setCurrentStage] = useState(0);
-  const totalStages = 5;
+  const totalStages = 3;
   const [loading, setLoading] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [submissions, setSubmissions] = useState<string[]>([]);
@@ -28,6 +28,35 @@ const DynamicForm = () => {
   const [companyDescription, setCompanyDescription] = useState('A data agency providing digital data services for small to medium-sized businesses.')
   const [summary, setSummary] = useState('')
 
+  
+  
+  useEffect(() => {
+    if (currentStage > totalStages) {
+      const formData = {
+        lead: lead,
+        purpose: formPurpose,
+        company: companyDescription,
+        messages: submissions,
+      };
+      
+      setLoading(true); // Indicate loading state
+      analyze(formData)
+        .then(result => {
+          // Handle result here
+          // console.log(result);
+          // Possibly update state with the result of the analysis
+          setSummary(result.summary);
+        })
+        .catch(error => {
+          // Handle error here
+          console.error("Error during analysis:", error);
+        })
+        .finally(() => setLoading(false)); // Reset loading state
+    }
+  }, [currentStage, totalStages]); // Add dependencies as needed
+
+  
+  
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
   };
@@ -48,10 +77,9 @@ const DynamicForm = () => {
         formPurpose: formPurpose,
         companyDescription: companyDescription
     })
-    console.log(questionResponse)
+    // console.log(questionResponse)
     setCurrentQuestion(questionResponse.question);
     setSuggestions(questionResponse.suggestions);
-    setSummary(questionResponse.analysis);
     const subRes = await createSubmission({
       thread:[{
         type: 'question', 
@@ -61,7 +89,7 @@ const DynamicForm = () => {
       context: data
     })
     const subId = subRes.insertedId;
-    console.log('Submission: '+ subId);
+    // console.log('Submission: '+ subId);
     setSubId(subId);
   };
 
@@ -73,11 +101,10 @@ const DynamicForm = () => {
         formPurpose: formPurpose,
         companyDescription: companyDescription
     })
-    console.log(nextQuestionResponse)
+    // console.log(nextQuestionResponse)
     setSubmissions([...submissions, currentQuestion, response]);
     setCurrentQuestion(nextQuestionResponse.question);
     setSuggestions(nextQuestionResponse.suggestions);
-    setSummary(nextQuestionResponse.analysis); 
     const thread = [
       {
         type: 'response',
@@ -89,13 +116,14 @@ const DynamicForm = () => {
       suggestions: nextQuestionResponse.suggestions
     }]
     const sub = await createThreadEntry(subId, thread);
-    console.log(sub)
+    // console.log(sub)
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    console.log('Form event:')
+    // console.log('Form event:')
+    setCurrentStage(currentStage + 1);
     if (currentStage === 0) {
       // Extract lead data from the form and call handleInitialDataSubmit
       const formData = new FormData(e.currentTarget);
@@ -113,7 +141,6 @@ const DynamicForm = () => {
       await handleQuestionResponseSubmit(answer as string);
 
     }
-    setCurrentStage(currentStage + 1);
     setInputValue('');
     setLoading(false);
     setSelectedAnswer(null); // Reset selected answer for the next stage
@@ -122,8 +149,8 @@ const DynamicForm = () => {
   const handleSuggestionSubmit = async (suggestion: string) => {
     setLoading(true);
     // console.log(suggestion)
-    await handleQuestionResponseSubmit(suggestion);
     setCurrentStage(currentStage + 1);
+    await handleQuestionResponseSubmit(suggestion);
     setLoading(false);
   };
 
@@ -132,23 +159,16 @@ const DynamicForm = () => {
     <div className="w-full max-w-screen-lg mx-auto">
     <div className="grid md:grid-cols-2 md:gap-4 grid-cols-1">
     <div className="col-span-1 bg-white bg-opacity-25 p-4 md:p-8 flex flex-col border border-green-600 rounded-md gap-4 h-fit w-full">
-      {currentStage === 0 ? (<>
+      {(<>
     <label htmlFor="form-purpose" className="text-sm font-semibold">Form Purpose</label>
-    <select id="form-purpose" name="form-purpose" className="border rounded-md p-2" onChange={changePurpose}>
+    <select id="form-purpose" name="form-purpose" className="border rounded-md p-2" onChange={changePurpose} disabled={currentStage > 0}>
         <option value="gather-information">Gather information</option>
         <option value="prequalification">Prequalification</option>
     </select>
 
     <label htmlFor="company-description" className="text-sm font-semibold">Company Description</label>
-    <textarea id="company-description" name="company-description" className="border rounded-md p-2" placeholder="A data agency providing digital data services for small to medium-sized businesses." onChange={changeDescription}></textarea>
-          </>):
-          <>
-          <div className='text-sm font-semibold'>Submission Analysis</div>
-          <div className='bg-white bg-opacity-25 w-full h-full border border-green-200 rounded-md p-1'>
-              <p>{summary}</p>
-          </div>
-          </>
-          }
+    <textarea id="company-description" name="company-description" className="border rounded-md p-2" placeholder="A data agency providing digital data services for small to medium-sized businesses." onChange={changeDescription} disabled={currentStage > 0}></textarea>
+          </>)}
     </div>
     <div className="col-span-1 w-full max-w-md flex flex-col border-2 border-green-600 rounded-xl p-6 space-y-6 bg-amber-200 bg-opacity-25  mx-auto">
 
@@ -191,7 +211,12 @@ const DynamicForm = () => {
             <div className="bg-green-500 h-2.5 rounded-full" style={{ width: `min(${(currentStage / totalStages) * 100}%, 100%)` }}></div>
           </div>
           {currentStage > totalStages ? (
-            <div className="text-lg font-semibold mb-2">Thank you for your submission!</div>):
+            <>
+            <div className="text-lg font-semibold mb-2">Thank you for your submission!</div>
+            <div className="text-lg font-semibold mb-2">Summary:</div>
+            <div className="text-md mb-2">{summary}</div>
+            </>
+            ):
             
             (
               <div className="my-4">

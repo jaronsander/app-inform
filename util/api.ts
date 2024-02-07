@@ -17,6 +17,19 @@ export const analyze = async (data) => {
     }
 }
 
+export const getQuestion = async (data) => {
+    const url = createURL(`/api/question/`)
+    console.log(data)
+    const response = await fetch(
+        new Request(url, { method: "POST", body: JSON.stringify({body: data}) })
+    )
+    console.log(response)
+    if(response.ok) {
+        const data = await response.json()
+        // console.log(data)
+        return data
+    }
+}
 export const initialQuestion = async (data) => {
     const url = createURL(`/api/introduction/`)
     // console.log(data)
@@ -43,8 +56,7 @@ export const createSubmission = async (data) => {
     }
 }
 
-export const createThreadEntry = async (data) => {
-    const id = data['submissionId']
+export const createThreadEntry = async (id, data) => {
     const url = createURL(`/api/submission/${id}`)
     console.log(url)
     const response = await fetch(

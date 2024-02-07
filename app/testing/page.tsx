@@ -1,4 +1,5 @@
-import { ChatForm } from '@/components/ChatForm'
+import DynamicForm from "@/components/DynamicForm"
+
 export default function Testing() {
     const person = {
         firstname: 'Jaron',
@@ -10,7 +11,7 @@ export default function Testing() {
         }
     return (
         <div className='w-screen h-screen bg-black flex flex-col my-auto items-center'>
-            <ChatForm submissionId={1} formEntry={person}/>
+            <DynamicForm/>
         </div>
     )
 }

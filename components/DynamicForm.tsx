@@ -160,7 +160,7 @@ const DynamicForm = () => {
     <div className="grid md:grid-cols-2 md:gap-4 grid-cols-1">
     <div className="col-span-1 bg-white bg-opacity-25 p-4 md:p-8 flex flex-col border border-green-600 rounded-md gap-4 h-fit w-full">
       {(<>
-    <label htmlFor="form-purpose" className="text-sm font-semibold">Form Purpose</label>
+    <label htmlFor="form-purpose" className="text-sm font-semibold">Form Configuration Panel</label>
     <select id="form-purpose" name="form-purpose" className="border rounded-md p-2" onChange={changePurpose} disabled={currentStage > 0}>
         <option value="gather-information">Gather information</option>
         <option value="prequalification">Prequalification</option>

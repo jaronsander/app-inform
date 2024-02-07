@@ -234,7 +234,7 @@ const DynamicForm = () => {
             ))}
             </div>
             <div className="flex items-center mb-2">
-              <label htmlFor="custom-answer">
+              <label htmlFor="custom-answer" className='w-full'>
                 <input 
                   type="text" 
                   name='custom-answer'

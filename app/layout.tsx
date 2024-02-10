@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import GoogleTagManager from '@magicul/next-google-tag-manager';
-import { ChakraProvider } from '@chakra-ui/react'
+import { GoogleTagManager } from '@next/third-parties/google'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <GoogleTagManager id={process.env.NEXT_PUBLIC_GTM}/>
+      <GoogleTagManager gtmId="GTM-TSW5KR85" />
         {children}
         </body>
     </html>

@@ -18,8 +18,9 @@ export const POST = async (req: Request, {params}) => {
         console.log(body);
         const result = await collection.updateOne(
             { _id: new ObjectId(id) },
-            { $push: { thread: {$each: body } }}
-        ); 
+            { $push: { thread: {$each: body } },
+            $set: { updatedAt: new Date() }
+        }); 
         console.log(result);
 
         return NextResponse.json({ data: result });

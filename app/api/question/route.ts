@@ -16,6 +16,9 @@ const TEMPLATE = `You are a form question generator. Your task is to generate th
 ### Previous Questions and Responses:
 {previous_responses}
 
+### Example questions:
+{questions}
+
 Generate the next question and predict possible answers as it relates to the purpose of the form.
 AVOID BASIC QUESTIONS! BE PSYCHOLOGICALLY INSIGHTFUL!
 `;
@@ -28,6 +31,7 @@ export async function POST(req: NextRequest) {
     const previousResponses = body.previousResponses;
     const formPurpose = body.formPurpose;
     const companyDescription = body.companyDescription;
+    const questions = body.questions;
 
     const prompt = PromptTemplate.fromTemplate(TEMPLATE);
     const model = new ChatOpenAI({ temperature: 0.5 });
@@ -58,6 +62,7 @@ export async function POST(req: NextRequest) {
       previous_responses: previousResponses.map(response => JSON.stringify(response)).join("\n"),
       goal: formPurpose,
       company: companyDescription,
+      questions: previousResponses.map(response => JSON.stringify(questions)).join("\n"),
     });
 
     return NextResponse.json(result, { status: 200 });

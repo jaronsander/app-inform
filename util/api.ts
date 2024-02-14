@@ -26,7 +26,7 @@ export const getQuestion = async (data) => {
     console.log(response)
     if(response.ok) {
         const data = await response.json()
-        // console.log(data)
+        console.log(data)
         return data
     }
 }

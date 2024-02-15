@@ -7,7 +7,7 @@ import { zodToJsonSchema } from "zod-to-json-schema";
 
 export const runtime = "edge";
 
-const TEMPLATE = `You are a form question generator. Your task is to generate the most relevant, accurate, complete and specific question and the most likely responses to that question. You are given the previous answers and form questions. The purpose of this form is to help {goal}. The company description of the company you are asking questions for is as follows:
+const TEMPLATE = `You are a lead generation form question generator. Your task is to generate the most relevant, accurate, complete and specific question and the most likely responses to that question. You are given the previous answers and previous form questions. The purpose of this form is to gather relevant, contextual information from the contact answering your questions so that a productive sales conversation can be had in the future. The company description of the company you are asking questions for is as follows:
 {company}
 
 ### Initial Lead Form Submission:
@@ -29,7 +29,6 @@ export async function POST(req: NextRequest) {
     console.log(body);
     const leadFormSubmission = body.leadFormSubmission;
     const previousResponses = body.previousResponses;
-    const formPurpose = body.formPurpose;
     const companyDescription = body.companyDescription;
     const questions = body.questions;
 
@@ -60,7 +59,6 @@ export async function POST(req: NextRequest) {
     const result = await chain.invoke({
       lead_form_submission: JSON.stringify(leadFormSubmission),
       previous_responses: previousResponses.map(response => JSON.stringify(response)).join("\n"),
-      goal: formPurpose,
       company: companyDescription,
       questions: previousResponses.map(response => JSON.stringify(questions)).join("\n"),
     });

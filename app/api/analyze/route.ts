@@ -27,7 +27,19 @@ Your task is to assess the lead's qualification status based on the provided inf
 
 Disregard the example response and provide your own assessment of the lead's qualification status, reason, and objection (if applicable) based on the form information and chat history.`;
 
-const TEMP = `You are a summary generator. Your task is to generate a summary of the form submission. The form is for {purpose} and the company is {company}. The lead information is as follows: {lead}. The form questions and answers are as follows: {chat_history}. Generate an executive summary of the form submission.`;
+const TEMP = `You are a lead insight generator. Your task is to generate an insightful summary of the form submission. The form is for generating leads and the company has the following description:
+
+{company}
+
+The lead information is: 
+
+{lead}
+
+The form questions and answers:
+
+{chat_history}
+
+Generate an concise summary of the leads answers and suggest specific points to address when an SDR reached out to the lead.`;
 /**
  * This handler initializes and calls an OpenAI Functions powered
  * structured output chain. See the docs for more information:
@@ -41,7 +53,6 @@ export async function POST(req: NextRequest) {
     const messages = body.messages ?? [];
     // const currentMessageContent = messages[messages.length - 1].content;
     const lead = body.lead;
-    const purpose = body.purpose;
     const company = body.company;
 
     const prompt = PromptTemplate.fromTemplate(TEMP);
@@ -98,14 +109,12 @@ export async function POST(req: NextRequest) {
     const formattedPrompt = await prompt.format({
         lead: JSON.stringify(lead),
         chat_history: messages.map((message) => JSON.stringify(message)).join("\n"),
-        purpose: purpose,
         company: company,
     });
     console.log(formattedPrompt);
     const result = await chain.invoke({
       lead: JSON.stringify(lead),
       chat_history: messages.map((message) => JSON.stringify(message)).join("\n"),
-      purpose: purpose,
       company: company,
     });
 

@@ -20,13 +20,12 @@ const DynamicForm = () => {
   const [currentQuestion, setCurrentQuestion] = useState<string>('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [currentStage, setCurrentStage] = useState(0);
-  const totalStages = 5;
+  const totalStages = 4;
   const [loading, setLoading] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [submissions, setSubmissions] = useState<string[]>([]);
   const [subId, setSubId] = useState<number | null>(null);
   const [inputValue, setInputValue] = useState('')
-  const [formPurpose, setFormPurpose] = useState('Gather information')
   const [summary, setSummary] = useState('')
   const [questions, setQuestions] = useState([]);
   const [questionInput, setQuestionInput] = useState('');
@@ -49,12 +48,17 @@ const DynamicForm = () => {
   const handleChange = (event) => {
     setQuestionInput(event.target.value);
   };
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Prevent form submission if wrapped in a form
+      addItem();
+    }
+  };
   
   useEffect(() => {
     if (currentStage > totalStages) {
       const formData = {
         lead: lead,
-        purpose: formPurpose,
         company: selectedOption.description,
         messages: submissions,
       };
@@ -80,9 +84,6 @@ const DynamicForm = () => {
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
   };
-  const changePurpose = (event) => {
-    setFormPurpose(event.target.value);
-  }
 
 
   const handleInitialDataSubmit = async (data: LeadData) => {
@@ -91,7 +92,6 @@ const DynamicForm = () => {
     const questionResponse: QuestionData = await getQuestion({
         leadFormSubmission: data,
         previousResponses: [],
-        formPurpose: formPurpose,
         companyDescription: selectedOption.description,
         questions: questions
     })
@@ -120,7 +120,6 @@ const DynamicForm = () => {
     const nextQuestionResponse: QuestionData = await getQuestion({
         leadFormSubmission: lead,
         previousResponses: [...submissions, currentQuestion, response],
-        formPurpose: formPurpose,
         companyDescription: selectedOption.description,
         questions: questions
     })
@@ -184,12 +183,6 @@ const DynamicForm = () => {
     <div className="w-full max-w-screen-lg mx-auto">
     <div className="grid md:grid-cols-2 md:gap-4 grid-cols-1">
     <div className="col-span-1 bg-white bg-opacity-25 p-4 md:p-8 flex flex-col border border-green-600 rounded-md gap-4 h-fit w-full">
-      {(<>
-    <label htmlFor="form-purpose" className="text-sm font-semibold">Form Purpose</label>
-    <select id="form-purpose" name="form-purpose" className="border rounded-md p-2" onChange={changePurpose} disabled={currentStage > 0}>
-        <option value="gather-information">Gather information</option>
-        <option value="prequalification">Prequalification</option>
-    </select>
     <label htmlFor="company-select" className="block text-sm font-semibold">Choose a Company:</label>
         <select
           id="company-select"
@@ -215,7 +208,9 @@ const DynamicForm = () => {
   <input
     id="questions"
     type="text"
+    value={questionInput} // Add this to control the input
     onChange={handleChange}
+    onKeyDown={handleKeyPress} // Add this to handle the Enter key press
     placeholder="Add a question"
     className="flex-grow p-2 border-gray-300 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
   />
@@ -234,9 +229,8 @@ const DynamicForm = () => {
     </li>
   ))}
 </ul>
-          </>)}
     </div>
-    <div className="col-span-1 w-full max-w-md flex flex-col border-2 border-green-600 rounded-xl p-6 space-y-6 bg-amber-200 bg-opacity-25  mx-auto">
+    <div className="col-span-1 w-full max-w-md flex flex-col border-2 border-green-600 rounded-xl p-6 space-y-6 bg-amber-200 bg-opacity-25  mx-auto h-fit">
 
     <form onSubmit={handleSubmit}>
       {currentStage === 0 && (
@@ -274,32 +268,32 @@ const DynamicForm = () => {
         {/* <p>{currentStage}</p> */}
         {/* Progress Bar */}
           <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-            <div className="bg-green-500 h-2.5 rounded-full" style={{ width: `min(${(currentStage / totalStages) * 100}%, 100%)` }}></div>
+            <div className="bg-green-500 h-2.5 rounded-full" style={{ width: `min(${(currentStage / (totalStages+1)) * 100}%, 100%)` }}></div>
           </div>
           {currentStage > totalStages ? (
             <>
             <div className="text-lg font-semibold mb-2">Thank you for your submission!</div>
             <div className="text-lg font-semibold mb-2">Summary:</div>
-            <div className="text-md mb-2">{summary}</div>
+            <div className="text-md">{summary}</div>
             </>
             ):
             
             (
               <div className="my-4">
             <div className="text-lg font-semibold mb-2">{currentQuestion}</div>
-            <div className="flex flex-wrap space-x-2">
+            <div className="flex flex-wrap mr-2">
             {suggestions.map((suggestion, index) => (
               <button
                 key={index}
                 type="button"
-                className="mb-2 px-4 py-2 bg-amber-500 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded"
+                className="mb-2 px-4 py-2 bg-amber-500 hover:bg-amber-700 text-white font-bold rounded mr-2"
                 onClick={() => handleSuggestionSubmit(suggestion)}
               >
                 {suggestion}
               </button>
             ))}
             </div>
-            <div className="flex items-center mb-2">
+            <div className="flex items-center">
               <label htmlFor="custom-answer" className='w-full'>
                 <input 
                   type="text" 
@@ -316,7 +310,10 @@ const DynamicForm = () => {
           
         </>
       )}
-      <SubmitButton isLoading={loading} disable={!(currentStage === 0 || inputValue.length > 5)}/>
+      <div className=''>
+      <SubmitButton isLoading={loading} disable={!(currentStage === 0 || inputValue.length > 3)}/>
+      </div>
+      
     </form>
     </div>
     </div>

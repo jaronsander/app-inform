@@ -181,8 +181,8 @@ const DynamicForm = () => {
 
   return (
     <div className="w-full max-w-screen-lg mx-auto">
-    <div className="grid md:grid-cols-2 md:gap-4 grid-cols-1">
-    <div className="col-span-1 bg-white bg-opacity-25 p-4 md:p-8 flex flex-col border border-green-600 rounded-md gap-4 h-fit w-full">
+    <div className="grid md:grid-cols-2 md:gap-4 grid-cols-1 gap-4">
+    <div className="col-span-1 bg-white bg-opacity-25 max-w-md p-4 md:p-8 flex flex-col border border-green-600 rounded-md gap-4 h-fit w-full mx-auto">
     <label htmlFor="company-select" className="block text-sm font-semibold">Choose a Company:</label>
         <select
           id="company-select"
